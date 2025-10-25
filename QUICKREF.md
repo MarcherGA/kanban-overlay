@@ -8,7 +8,7 @@ cargo run --release
 ## ⌨️ Global Shortcuts
 | Key | Action |
 |-----|--------|
-| `Ctrl+Shift+K` | Toggle overlay (show/hide) |
+| `Ctrl+Shift+L` | Toggle overlay (show/hide) |
 | `Escape` | Hide overlay |
 | `Enter` | Execute command |
 
@@ -159,12 +159,12 @@ list doing
 3. **Drag for speed:** Drag & drop is faster than typing move commands
 4. **Right-click:** Quickly delete tasks via context menu
 5. **Copy IDs:** Right-click > Copy ID when you need task IDs
-6. **Keep it open:** Use Ctrl+Shift+K to quickly show/hide, don't close the app
+6. **Keep it open:** Use Ctrl+Shift+L to quickly show/hide, don't close the app
 
 ## 🐛 Troubleshooting
 
 **Overlay not showing?**
-- Press `Ctrl+Shift+K` again
+- Press `Ctrl+Shift+L` again
 - Check if minimized to tray
 - Restart the application
 
@@ -222,6 +222,6 @@ Done: 1 tasks
 
 ---
 
-**Remember:** Press `Ctrl+Shift+K` anytime to toggle!
+**Remember:** Press `Ctrl+Shift+L` anytime to toggle!
 
 **Happy task managing! 🚀**

@@ -7,7 +7,7 @@
 │                         USER INPUT LAYER                         │
 │  ┌─────────────────┐              ┌─────────────────┐          │
 │  │ Global Hotkey   │              │  Keyboard/Mouse │          │
-│  │ (Ctrl+Shift+K)  │              │    (UI Events)  │          │
+│  │ (Ctrl+Shift+L)  │              │    (UI Events)  │          │
 │  └────────┬────────┘              └────────┬────────┘          │
 └───────────┼─────────────────────────────────┼──────────────────┘
             │                                  │
@@ -146,7 +146,7 @@ Mouse Down on Task
 ### 3. Toggle Visibility Flow
 
 ```
-User presses Ctrl+Shift+K
+User presses Ctrl+Shift+L
      │
      ▼
 ┌──────────────────────┐

@@ -92,7 +92,7 @@ You should see tasks appear in the columns!
 
 **Hotkey not working:**
 - Try running as Administrator
-- Check if other apps use Ctrl+Shift+K
+- Check if other apps use Ctrl+Shift+L
 - Edit `main.rs` to change hotkey
 
 **Window not transparent:**
@@ -160,4 +160,4 @@ cargo build --release
 
 ---
 
-**You're all set! Press `Ctrl+Shift+K` and start managing tasks! 🚀**
+**You're all set! Press `Ctrl+Shift+L` and start managing tasks! 🚀**

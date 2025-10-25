@@ -36,7 +36,7 @@ A **complete, production-ready** kanban board overlay application built in Rust 
 - [x] Smooth 60 FPS rendering
 
 ### Core Functionality ✅
-- [x] Global hotkey (Ctrl+Shift+K)
+- [x] Global hotkey (Ctrl+Shift+L)
 - [x] Transparent overlay window
 - [x] Keyboard command console
 - [x] Drag & drop support
@@ -378,7 +378,7 @@ cargo build --release
 # Run it
 cargo run --release
 
-# Press Ctrl+Shift+K anytime to toggle
+# Press Ctrl+Shift+L anytime to toggle
 # Type 'help' to see commands
 # Start managing your tasks!
 ```

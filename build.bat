@@ -28,7 +28,7 @@ if %ERRORLEVEL% EQU 0 (
     echo   or
     echo   .\target\release\kanban-overlay.exe
     echo.
-    echo Press Ctrl+Shift+K to toggle the overlay
+    echo Press Ctrl+Shift+L to toggle the overlay
     echo Press Escape to hide it
     echo.
 ) else (

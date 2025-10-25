@@ -5,7 +5,7 @@ A blazing-fast, keyboard-first kanban board overlay built with Rust and egui.
 ## Features
 
 - **Lightning Fast**: Opens in 0.3-0.5 seconds
-- **Global Hotkey**: Toggle with `Ctrl+Shift+K` from anywhere
+- **Global Hotkey**: Toggle with `Ctrl+Shift+L` from anywhere
 - **Transparent Overlay**: FlowLauncher-style minimal design
 - **Keyboard-First**: Command console for power users
 - **Drag & Drop**: Visual interaction when you need it
@@ -33,7 +33,7 @@ cargo run --release
 ### First Launch
 
 1. The overlay will appear on first launch
-2. Press `Ctrl+Shift+K` to hide/show it anytime
+2. Press `Ctrl+Shift+L` to hide/show it anytime
 3. Type `help` in the command bar for available commands
 4. Press `Escape` to hide the overlay
 
@@ -75,7 +75,7 @@ help
 
 ### Shortcuts
 
-- `Ctrl+Shift+K` - Toggle overlay visibility
+- `Ctrl+Shift+L` - Toggle overlay visibility
 - `Escape` - Hide overlay
 - `Enter` - Execute command
 - Right-click on task - Context menu
@@ -187,7 +187,7 @@ impl Default for KanbanState {
 
 ### Hotkey Not Working
 
-- Check if another application is using `Ctrl+Shift+K`
+- Check if another application is using `Ctrl+Shift+L`
 - Try running as administrator (Windows)
 - Change to a different hotkey combination
 

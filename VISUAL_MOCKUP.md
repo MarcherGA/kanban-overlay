@@ -125,14 +125,14 @@ Command Prompt: Blue             RGB(100, 150, 255)
 
 ## Window States
 
-### Hidden (Ctrl+Shift+K pressed)
+### Hidden (Ctrl+Shift+L pressed)
 ```
 [Window invisible]
 [Process still running in background]
 [Ready to show instantly]
 ```
 
-### Visible (Ctrl+Shift+K pressed again)
+### Visible (Ctrl+Shift+L pressed again)
 ```
 [Window appears with fade-in]
 [Command bar auto-focused]
@@ -220,7 +220,7 @@ Drop with subtle bounce effect (optional)
 ## Example Workflow Animation
 
 ```
-1. Press Ctrl+Shift+K
+1. Press Ctrl+Shift+L
    [Window appears - 150ms]
 
 2. Type command:
@@ -244,7 +244,7 @@ Drop with subtle bounce effect (optional)
    [Column counts update]
    [Background save queued]
 
-6. Press Escape or Ctrl+Shift+K
+6. Press Escape or Ctrl+Shift+L
    [Window hides - 25ms]
    [Background save completes]
 ```

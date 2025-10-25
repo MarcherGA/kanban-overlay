@@ -36,7 +36,7 @@ cargo build --release
 cargo run --release
 ```
 
-That's it! Press `Ctrl+Shift+K` to toggle the overlay.
+That's it! Press `Ctrl+Shift+L` to toggle the overlay.
 
 ## 📚 Documentation Guide
 
@@ -91,7 +91,7 @@ kanban-overlay/
 ## ✨ Key Features
 
 ✅ **Lightning Fast** - Opens in <200ms
-✅ **Global Hotkey** - Ctrl+Shift+K from anywhere
+✅ **Global Hotkey** - Ctrl+Shift+L from anywhere
 ✅ **Keyboard First** - Command console for power users
 ✅ **Drag & Drop** - Visual interaction when needed
 ✅ **Auto-Save** - Never lose your work
@@ -101,7 +101,7 @@ kanban-overlay/
 ## 🎮 Controls
 
 ### Keyboard
-- `Ctrl+Shift+K` - Toggle overlay
+- `Ctrl+Shift+L` - Toggle overlay
 - `Escape` - Hide overlay
 - `Enter` - Execute command
 - Type commands like: `add "task" to doing`
@@ -187,12 +187,12 @@ cargo build --release
 
 ### Hotkey Not Working
 - Try running as administrator (Windows)
-- Check if another app uses Ctrl+Shift+K
+- Check if another app uses Ctrl+Shift+L
 - Change to different key combination
 
 ### Window Not Appearing
 - Check taskbar/system tray
-- Press Ctrl+Shift+K again
+- Press Ctrl+Shift+L again
 - Look for error messages in terminal
 
 ## 📊 Package Stats
@@ -233,7 +233,7 @@ cd kanban-overlay
 cargo run --release
 ```
 
-**Press Ctrl+Shift+K and start building your workflow!** 🚀
+**Press Ctrl+Shift+L and start building your workflow!** 🚀
 
 ---
 

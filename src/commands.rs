@@ -144,7 +144,7 @@ fn cmd_help() -> Result<String, String> {
   help                             - Show this help
   
 Task IDs are the first 8 characters shown on each card.
-Press Ctrl+Shift+K to toggle overlay."#.to_string())
+Press Ctrl+Shift+L to toggle overlay."#.to_string())
 }
 
 /// Parse a quoted string or take the first argument

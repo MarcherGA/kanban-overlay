@@ -27,7 +27,7 @@ if [ $? -eq 0 ]; then
     echo "  or"
     echo "  ./target/release/kanban-overlay"
     echo ""
-    echo "Press Ctrl+Shift+K to toggle the overlay"
+    echo "Press Ctrl+Shift+L to toggle the overlay"
     echo "Press Escape to hide it"
     echo ""
 else

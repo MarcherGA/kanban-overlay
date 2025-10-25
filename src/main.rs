@@ -25,7 +25,7 @@ fn main() -> Result<(), eframe::Error> {
         persistence::load_state().await.unwrap_or_default()
     });
 
-    // Setup global hotkey (Ctrl+Shift+K)
+    // Setup global hotkey (Ctrl+Shift+L)
     let hotkey_manager = GlobalHotKeyManager::new().unwrap();
     let hotkey = HotKey::new(Some(Modifiers::CONTROL | Modifiers::SHIFT), Code::KeyL);
     hotkey_manager.register(hotkey).unwrap();

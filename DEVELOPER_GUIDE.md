@@ -46,7 +46,7 @@
 1. main() is called
 2. Create Tokio runtime for async
 3. Load state from ~/.kanban/state.json
-4. Setup global hotkey (Ctrl+Shift+K)
+4. Setup global hotkey (Ctrl+Shift+L)
 5. Create shared app state (Arc<Mutex>)
 6. Spawn hotkey listener thread
 7. Create eframe window with egui
