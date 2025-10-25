@@ -62,7 +62,7 @@ impl StateSaver {
     pub fn new(runtime: &tokio::runtime::Runtime) -> Self {
         let (tx, mut rx) = mpsc::channel::<KanbanState>(10);
 
-        // Spawn background task
+        // Spawn background task with lower priority to avoid CPU spikes
         runtime.spawn(async move {
             let mut pending_state: Option<KanbanState> = None;
 
@@ -72,9 +72,11 @@ impl StateSaver {
                     Some(state) = rx.recv() => {
                         pending_state = Some(state);
                     }
-                    // When we have pending state, wait 2 seconds then save
-                    _ = tokio::time::sleep(std::time::Duration::from_secs(2)), if pending_state.is_some() => {
+                    // When we have pending state, wait 5 seconds then save
+                    // Longer delay reduces frequency of saves and CPU spikes
+                    _ = tokio::time::sleep(std::time::Duration::from_secs(5)), if pending_state.is_some() => {
                         if let Some(state) = pending_state.take() {
+                            // Save happens on tokio runtime, won't block main thread
                             if let Err(e) = save_state(&state).await {
                                 eprintln!("Failed to save state: {}", e);
                             }

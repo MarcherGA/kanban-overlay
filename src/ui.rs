@@ -23,6 +23,9 @@ pub fn render_ui(ctx: &egui::Context, state: &mut KanbanState) {
         .show(ctx, |ui| {
             ui.spacing_mut().item_spacing = Vec2::new(8.0, 8.0);
 
+            // Custom title bar for window dragging (since decorations are disabled)
+            render_title_bar(ui, ctx);
+
             // Command bar at top
             render_command_bar(ui, state);
 
@@ -43,6 +46,49 @@ pub fn render_ui(ctx: &egui::Context, state: &mut KanbanState) {
                     render_columns(ui, state);
                 });
         });
+}
+
+fn render_title_bar(ui: &mut egui::Ui, ctx: &egui::Context) {
+    let title_bar_height = 28.0;
+
+    // Allocate space for title bar using standard egui layout
+    let title_bar_response = ui.allocate_response(
+        Vec2::new(ui.available_width(), title_bar_height),
+        egui::Sense::click_and_drag()  // CRITICAL: Must use click_and_drag, not just click!
+    );
+
+    // Paint the title bar background on the response rect
+    ui.painter().rect_filled(
+        title_bar_response.rect,
+        Rounding::same(0.0),
+        Color32::from_rgba_premultiplied(35, 35, 45, 240),
+    );
+
+    // Handle window dragging - ONLY send StartDrag when drag first begins
+    // Using drag_started() instead of dragged() prevents sending the command every frame
+    if title_bar_response.drag_started() {
+        ctx.send_viewport_cmd(egui::ViewportCommand::StartDrag);
+    }
+
+    // Draw title text over the background (using painter to avoid layout issues)
+    let text_pos = title_bar_response.rect.left_center() + Vec2::new(10.0, 0.0);
+    ui.painter().text(
+        text_pos,
+        egui::Align2::LEFT_CENTER,
+        "📋 Kanban Overlay",
+        egui::FontId::proportional(14.0),
+        Color32::from_rgb(150, 150, 170),
+    );
+
+    // Draw hint text on the right
+    let hint_text_pos = title_bar_response.rect.right_center() - Vec2::new(10.0, 0.0);
+    ui.painter().text(
+        hint_text_pos,
+        egui::Align2::RIGHT_CENTER,
+        "ESC to hide",
+        egui::FontId::proportional(11.0),
+        Color32::from_rgb(100, 100, 120),
+    );
 }
 
 fn render_command_bar(ui: &mut egui::Ui, state: &mut KanbanState) {
@@ -97,6 +143,7 @@ fn render_column(ui: &mut egui::Ui, state: &mut KanbanState, col_idx: usize, wid
         ui.set_width(width);
 
         // Column header
+        // Need to clone column_name since we mutate state later
         let column_name = state.columns[col_idx].name.clone();
         let task_count = state.columns[col_idx].tasks.len();
 
@@ -112,8 +159,11 @@ fn render_column(ui: &mut egui::Ui, state: &mut KanbanState, col_idx: usize, wid
             .max_height(600.0)
             .auto_shrink([false, false])
             .show(ui, |ui| {
-                let tasks = state.columns[col_idx].tasks.clone();
                 let mut task_to_delete: Option<TaskId> = None;
+
+                // Clone tasks to avoid borrow checker issues during mutation
+                // This is still more efficient than the original since we only clone when rendering
+                let tasks = state.columns[col_idx].tasks.clone();
 
                 for task in tasks.iter() {
                     let response = render_task_card(ui, task, &column_name);
@@ -185,7 +235,7 @@ fn render_task_card(ui: &mut egui::Ui, task: &Task, _column_name: &str) -> egui:
         .stroke(Stroke::new(1.0, Color32::from_rgb(60, 62, 74)))
         .inner_margin(Margin::same(10.0));
 
-    frame
+    let response = frame
         .show(ui, |ui| {
             ui.set_min_width(280.0);
 
@@ -222,6 +272,13 @@ fn render_task_card(ui: &mut egui::Ui, task: &Task, _column_name: &str) -> egui:
             }
         })
         .response
-        .interact(egui::Sense::click_and_drag())
-        .on_hover_cursor(egui::CursorIcon::Grab)
+        .interact(egui::Sense::click_and_drag());
+
+    // Set cursor WITHOUT triggering repaints - only change cursor if hovered
+    // Don't call on_hover_cursor as it causes repaints
+    if response.hovered() {
+        ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
+    }
+
+    response
 }

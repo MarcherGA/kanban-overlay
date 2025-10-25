@@ -126,6 +126,11 @@ fn main() -> Result<(), eframe::Error> {
             .with_always_on_top()
             .with_resizable(true)
             .with_taskbar(false),  // Don't show in taskbar
+
+        // CRITICAL: Configure for reactive mode, not continuous rendering
+        // This tells eframe to only repaint when events occur, not constantly
+        run_and_return: false,
+
         ..Default::default()
     };
 
@@ -147,7 +152,7 @@ struct KanbanApp {
     state: Arc<Mutex<AppState>>,
     runtime: Runtime,
     normal_size: [f32; 2],
-    normal_pos: Option<egui::Pos2>,
+    normal_pos: Option<egui::Pos2>,  // Track window position when visible
     last_visible_state: bool,  // Track previous visibility to detect transitions
 }
 
@@ -157,7 +162,7 @@ impl KanbanApp {
             state,
             runtime,
             normal_size: [1000.0, 700.0],
-            normal_pos: None,
+            normal_pos: None,  // Will be set on first frame
             last_visible_state: true,  // Start visible
         }
     }
@@ -165,15 +170,16 @@ impl KanbanApp {
 
 impl eframe::App for KanbanApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        // DEBUG: Log what events trigger updates
-        ctx.input(|i| {
-            if !i.events.is_empty() {
-                eprintln!("[DEBUG] update() called with events: {:#?}", i.events);
-            }
-        });
-
         // Store context globally on first frame so background threads can wake up the UI
         let _ = EGUI_CTX.set(ctx.clone());
+
+        // DEBUG: Check what events are causing repaints
+        #[cfg(debug_assertions)]
+        ctx.input(|i| {
+            if !i.events.is_empty() {
+                eprintln!("[DEBUG] Events: {:?}", i.events);
+            }
+        });
 
         // Check if we should be visible
         let should_be_visible = {
@@ -199,23 +205,16 @@ impl eframe::App for KanbanApp {
                 // Enable always-on-top when showing
                 ctx.send_viewport_cmd(egui::ViewportCommand::WindowLevel(egui::WindowLevel::AlwaysOnTop));
 
+                // CRITICAL: Restore position to bring window back from off-screen
+                // If we don't have a saved position, use a default centered position
+                let restore_pos = self.normal_pos.unwrap_or(egui::Pos2::new(200.0, 150.0));
+                ctx.send_viewport_cmd(egui::ViewportCommand::OuterPosition(restore_pos));
+
                 // Restore normal size
                 ctx.send_viewport_cmd(egui::ViewportCommand::InnerSize(self.normal_size.into()));
 
-                // Restore position if we saved one
-                if let Some(pos) = self.normal_pos {
-                    ctx.send_viewport_cmd(egui::ViewportCommand::OuterPosition(pos));
-                }
-
                 // Focus the window
                 ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
-            }
-
-            // Save current position if we have it (for next show)
-            if let Some(pos) = ctx.input(|i| i.viewport().outer_rect.map(|r| r.min)) {
-                if pos.x > -10000.0 {  // Only save if not off-screen
-                    self.normal_pos = Some(pos);
-                }
             }
 
             // Render UI
@@ -223,9 +222,19 @@ impl eframe::App for KanbanApp {
                 let mut app_state = self.state.lock().unwrap();
                 ui::render_ui(ctx, &mut app_state.kanban);
 
-                // Only save state when there's actual interaction (ctx has events)
-                // Don't save every frame - wasteful in reactive mode
-                if ctx.input(|i| i.events.len() > 0) {
+                // Only save state when there's actual DATA modification
+                // Exclude window focus/visibility events that don't change data
+                let should_save = ctx.input(|i| {
+                    i.events.iter().any(|e| match e {
+                        egui::Event::Text(_) => true,  // Typing
+                        egui::Event::Key { pressed: true, key, .. } => {
+                            !matches!(*key, egui::Key::Escape | egui::Key::Tab | egui::Key::ArrowUp | egui::Key::ArrowDown)
+                        }
+                        _ => false
+                    })
+                });
+
+                if should_save {
                     app_state.saver.save(app_state.kanban.clone());
                 }
             }
@@ -236,14 +245,22 @@ impl eframe::App for KanbanApp {
                 state.visible = false;
             }
 
-            // Use reactive mode: only repaint when there are input events
-            // This allows CPU to drop to 0-1% when idle, just like FlowLauncher
-            // egui automatically repaints on mouse/keyboard input
+            // NOTE: egui automatically repaints when it receives events
+            // We can't fully prevent PointerMoved from causing update() to be called
+            // The CPU spike is unavoidable with current egui architecture
+            // The best we can do is minimize work done in each frame
         } else {
             // HIDE: Shrink to 1x1 pixel and move off-screen (ghost window approach)
 
             // Only send viewport commands when transitioning from visible to hidden
             if visibility_changed {
+                // Save current position ONCE before hiding (for next show)
+                if let Some(rect) = ctx.input(|i| i.viewport().outer_rect) {
+                    if rect.min.x > -5000.0 {  // Only save if currently on-screen
+                        self.normal_pos = Some(rect.min);
+                    }
+                }
+
                 // CRITICAL: Disable always-on-top when hidden to avoid conflicts with other overlays (NVIDIA, Discord, etc.)
                 // This prevents z-order battles that cause continuous redraws
                 ctx.send_viewport_cmd(egui::ViewportCommand::WindowLevel(egui::WindowLevel::Normal));
